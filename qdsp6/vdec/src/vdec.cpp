@@ -897,12 +897,6 @@ struct VDecoder *vdec_open(struct vdec_context *ctxt)
               "Adsp Open Failed\n");
       goto fail_initialize;
    }
-   if(FLAG_THUMBNAIL_MODE == init.postproc_flag) {
-      struct vdec_property_info property;
-      property.id = VDEC_PRIORITY;
-      property.property.priority = 0;
-      adsp_setproperty((struct adsp_module *)dec->adsp_module, &property);
-   }
 
    QPERF_RESET(arm_decode);
 
@@ -1326,15 +1320,4 @@ Vdec_ReturnType vdec_flush_port(struct VDecoder * dec, int *nFlushedFrames,
       }
    }
    return retVal;
-}
-Vdec_ReturnType vdec_performance_change_request(struct VDecoder* dec, unsigned int request_type) {
-  if (NULL == dec || NULL == dec->adsp_module) {
-    QTV_MSG_PRIO2(QTVDIAG_GENERAL, QTVDIAG_PRIO_ERROR,
-      "vdec: error: encountered NULL parameter vdec: 0x%x or adsp_module: 0x%x \n",
-      (unsigned int)dec, dec->adsp_module);
-    return VDEC_EFAILED;
-  }
-  if(adsp_performance_change_request((struct adsp_module *)dec->adsp_module,request_type))
-    return VDEC_EFAILED;
-  return VDEC_SUCCESS;
 }
